@@ -2,14 +2,26 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-invoice-nr = "invoice-001"
+invoice-nr = "inv-001"
 # date = ""
+
+#~ IDR
+prefix = "Rp "
+splitter = "."
+comma = ","
+d = 2
+
+#~ USD
+# prefix = "$"
+# splitter = ","
+# comma = "."
+# d = 2
 
 invoice-city = "Sidoarjo"
 
 items = [
-  { date = "April 2021", description = "Registering x.com domain name for 2021-2022.", price = 14.86 },
-  { date = "May 2021", description = "Paying for Cloudfront, a content delivery network (CDN) service to distribute static and dynamic content quickly and reliably with high speed, to share the manga pages to all edge servers around the world.", price = 300.53 },
+  { date = "April 2021", description = "Registering x.com domain name for 2021-2022.", price = 1486 },
+  { date = "May 2021", description = "Paying for Cloudfront, a content delivery network (CDN) service to distribute static and dynamic content quickly and reliably with high speed.", price = 300.53 },
   { date = "June 2021", description = "Paying for Route 53 monthly, a highly available and scalable Domain Name System (DNS) web service, to provide x.com service connections.", price = 2.24 },
   { date = "July 2021", description = "Paying for Route 53 monthly.", price = 0.89 },
 ]

@@ -1,10 +1,10 @@
 #import "@preview/tablex:0.0.5": gridx, hlinex
 
-#let details = toml("data.toml")
+#let data = toml("data.toml")
 
 #{
-  if not details.keys().contains("date") {
-    details.date = datetime.today().display("[day] [month repr:long] [year]")
+  if not data.keys().contains("date") {
+    data.date = datetime.today().display("[day] [month repr:long] [year]")
   }
 }
 
@@ -17,8 +17,10 @@
   let res = str(calc.round(num, digits: d))
   let pad = res.split(".")
   let post-len = 0
-  if pad.len() < 2 and d != none and d > 0 {
-    res += "."
+  if pad.len() < 2 {
+    if d != none and d > 0 {
+      res += "."
+    }
   } else if pad.len() >= 2 {
     post-len = pad.at(1).len()
   }
@@ -30,15 +32,16 @@
   return res
 }
 
-#let print-number(num, prefix: none, splitter: [,], split-num: 3, d: 0) = {
+#let print-number(num, prefix: none, splitter: [,], split-num: 3, d: 0, comma: ".") = {
   if num < 0 [\- ]
   [#prefix]
   num = calc.abs(num)
   let res = str(num)
   if d != none {
     res = round-fixed-str(num, d)
+    res = res.replace(".", comma)
   }
-  let res-split = res.split(".")
+  let res-split = res.split(comma)
   let left = res-split.at(0)
   let right = res-split.at(1, default: none)
   let mod = calc.rem(left.len(), split-num)
@@ -52,12 +55,12 @@
     i += split-num
   }
   if right != none {
-    [.#right]
+    comma + [#right]
   }
 }
 
 #let format_currency(number) = {
-  print-number(number, prefix: [\$], splitter: ",", d: 2)
+  print-number(number, prefix: data.prefix, splitter: data.splitter, d: data.d, comma: data.comma)
 }
 
 #set text(number-type: "old-style")
@@ -67,17 +70,17 @@
     #smallcaps[
       To: #[
         #set text(size: 1.2em)
-        #details.recipient.name
+        #data.recipient.name
       ]
     ]
-  ] #h(1fr) #[#details.invoice-city, #details.date]
+  ] #h(1fr) #[#data.invoice-city, #data.date]
 ]
 
 #heading[
-  Invoice \##details.invoice-nr
+  Invoice \##data.invoice-nr
 ]
 
-#let items = details.items.enumerate().map(
+#let items = data.items.enumerate().map(
     ((id, item)) => (
       [#item.date],
       [#item.description],
@@ -86,7 +89,7 @@
     )
   ).flatten()
 
-#let total = details.items.map((item) => item.at("price")).sum()
+#let total = data.items.map((item) => item.at("price")).sum()
 
 #[
   #set text(number-type: "lining")
@@ -116,10 +119,10 @@
   #set text(number-type: "lining")
   #gridx(
     columns: 2,
-    [Account holder name],[: #details.bank_account.name],
-    [Bank name],[: #details.bank_account.bank],
-    [Bank code],[: #details.bank_account.bank_code],
-    [Account number],[: #details.bank_account.number],
+    [Account holder name],[: #data.bank_account.name],
+    [Bank name],[: #data.bank_account.bank],
+    [Bank code],[: #data.bank_account.bank_code],
+    [Account number],[: #data.bank_account.number],
   )
 ]
 
@@ -131,4 +134,4 @@ Best regards,
 
 #image("res/sign.png", width: 10em)
 
-#details.author.name
+#data.author.name
