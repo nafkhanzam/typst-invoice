@@ -1,0 +1,5 @@
+#! /bin/bash
+
+mkdir -p dist
+
+/home/nafkhanzam/.cargo/bin/typst compile src/main.typ dist/main.pdf

@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2023 Kerstin Humm <kerstin@erictapen.name>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+invoice-nr = "invoice-001"
+# date = ""
+
+invoice-city = "Sidoarjo"
+
+items = [
+  { date = "April 2021", description = "Registering x.com domain name for 2021-2022.", price = 14.86 },
+  { date = "May 2021", description = "Paying for Cloudfront, a content delivery network (CDN) service to distribute static and dynamic content quickly and reliably with high speed, to share the manga pages to all edge servers around the world.", price = 300.53 },
+  { date = "June 2021", description = "Paying for Route 53 monthly, a highly available and scalable Domain Name System (DNS) web service, to provide x.com service connections.", price = 2.24 },
+  { date = "July 2021", description = "Paying for Route 53 monthly.", price = 0.89 },
+]
+
+[author]
+name = "Moch. Nafkhan Alzamzami"
+street = "Dusun Krajan RT 12/04, Sepande, Candi"
+zip = "61271"
+city = "Sidoarjo"
+tax_nr = ""
+
+[recipient]
+name = "John Doe"
+street = ""
+zip = ""
+city = ""
+
+[bank_account]
+name = "Moch. Nafkhan Alzamzami"
+bank = "Bank Negara Indonesia (BNI)"
+bank_code = "90010"
+number = "1315637060"

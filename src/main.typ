@@ -1,10 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Kerstin Humm <kerstin@erictapen.name>
-//
-// SPDX-License-Identifier: GPL-3.0-or-later
+#import "@preview/tablex:0.0.5": gridx, hlinex
 
-#import "@preview/tablex:0.0.4": gridx, hlinex
-
-#let details = toml("invoice.toml")
+#let details = toml("data.toml")
 
 #{
   if not details.keys().contains("date") {
@@ -66,24 +62,15 @@
 
 #set text(number-type: "old-style")
 
-#{
-  smallcaps[To:]
-}
-
 #[
-  #set par(leading: 0.40em)
-  #set text(size: 1.2em)
-  #details.recipient.name \
-  #details.recipient.street \
-  #details.recipient.zip
-  #details.recipient.city
-]
-
-#v(1em)
-
-#[
-  #set align(right)
-  #details.invoice-city, #details.date
+  #[
+    #smallcaps[
+      To: #[
+        #set text(size: 1.2em)
+        #details.recipient.name
+      ]
+    ]
+  ] #h(1fr) #[#details.invoice-city, #details.date]
 ]
 
 #heading[
@@ -92,7 +79,6 @@
 
 #let items = details.items.enumerate().map(
     ((id, item)) => (
-      [#str(id + 1)],
       [#item.date],
       [#item.description],
       [],
@@ -105,40 +91,44 @@
 #[
   #set text(number-type: "lining")
   #gridx(
-    columns: (auto, auto, 1fr, auto, auto),
+    columns: (auto, 1fr, auto, auto),
     align: ((column, row) => if column >= 3 { right } else { left} ),
     hlinex(stroke: (thickness: 0.5pt)),
-    [*\#*], [*Date*], [*Description*], [], [*Cost*],
+    [*Date*], [*Description*], [], [*Cost*],
     hlinex(),
     ..items,
     hlinex(),
-    [], [], [], [ Total:], [#format_currency(total)],
-    hlinex(start: 4),
+    [], [], [ Total:], [#format_currency(total)],
+    hlinex(start: 2),
   )
 ]
 
 #v(1em)
 
 #[
-  Terima kasih atas kerjasamanya.
-  Detail riwayat transaksi pada akun kartu kredit saya terlampir (dalam kotak hijau).
+  The transaction details are attached below as appendices.
 
-  Harap transfer jumlah tagihan ke rekening saya di bawah ini.
+  The account details to transfer to are as follows:
 ]
-
-#v(1em)
 
 #[
   #set par(leading: 0.40em)
   #set text(number-type: "lining")
-  #details.bank_account.name \
-  #details.bank_account.bank #details.bank_account.number
+  #gridx(
+    columns: 2,
+    [Account holder name],[: #details.bank_account.name],
+    [Bank name],[: #details.bank_account.bank],
+    [Bank code],[: #details.bank_account.bank_code],
+    [Account number],[: #details.bank_account.number],
+  )
 ]
 
-#v(1em)
+Thank you.
+
+#h(1em)
 
 Best regards,
 
-#image("sign.png", width: 10em)
+#image("res/sign.png", width: 10em)
 
 #details.author.name
