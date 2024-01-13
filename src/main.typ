@@ -108,23 +108,33 @@
 
 #v(1em)
 
-#[
-  The transaction details are attached below as appendices.
-
-  The account details to transfer to are as follows:
-]
-
-#[
-  #set par(leading: 0.40em)
-  #set text(number-type: "lining")
-  #gridx(
-    columns: 2,
-    [Account holder name],[: #data.bank_account.name],
-    [Bank name],[: #data.bank_account.bank],
-    [Bank code],[: #data.bank_account.bank_code],
-    [Account number],[: #data.bank_account.number],
-  )
-]
+#{
+  let has-desc = data.keys().contains("description") and data.description.len() > 0
+  let is-paid = data.keys().contains("paid") and data.paid
+  if is-paid {
+    if has-desc {
+      [#data.description \ ]
+    } else [
+      Hereby declare that the invoice has been paid full by #data.recipient.name to #data.author.name.
+    ]
+  } else {
+    if has-desc {
+      [#data.description \ ]
+    }
+    [The account details to transfer to are as follows:]
+    {
+      set par(leading: 0.40em)
+      set text(number-type: "lining")
+      gridx(
+        columns: 2,
+        [Account holder name],[: #data.bank_account.name],
+        [Bank name],[: #data.bank_account.bank],
+        [Bank code],[: #data.bank_account.bank_code],
+        [Account number],[: #data.bank_account.number],
+      )
+    }
+  }
+}
 
 Thank you.
 

@@ -2,8 +2,10 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-invoice-nr = "inv-001"
+invoice-nr = "invoice-001"
 # date = ""
+# paid = true
+# description = ""
 
 #~ IDR
 prefix = "Rp "
