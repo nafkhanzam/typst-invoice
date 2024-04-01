@@ -7,7 +7,7 @@
     data.date = datetime.today().display("[day] [month repr:long] [year]")
   }
   data.items = data.items.map(item => {
-    if item.at("rate") != none and item.at("unit") != none {
+    if item.at("rate", default: none) != none and item.at("unit", default: none) != none {
       item.price = item.rate * item.unit
     }
     item
