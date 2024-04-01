@@ -1,4 +1,4 @@
-#import "@preview/tablex:0.0.5": gridx, hlinex
+#import "@preview/tablex:0.0.8": gridx, hlinex
 
 #let data = toml("data.toml")
 
@@ -6,6 +6,12 @@
   if not data.keys().contains("date") {
     data.date = datetime.today().display("[day] [month repr:long] [year]")
   }
+  data.items = data.items.map(item => {
+    if item.at("rate") != none and item.at("unit") != none {
+      item.price = item.rate * item.unit
+    }
+    item
+  })
 }
 
 #set page(
@@ -66,42 +72,56 @@
 #set text(number-type: "old-style")
 
 #[
-  #[
-    #smallcaps[
-      To: #[
-        #set text(size: 1.2em)
-        #data.recipient.name
+  #{
+    if (data.recipient.name != none) and (data.recipient.name != "") {
+      smallcaps[
+        To: #[
+          #set text(size: 1.2em)
+          #data.recipient.name
+        ]
       ]
-    ]
-  ] #h(1fr) #[#data.invoice-city, #data.date]
+    } else {
+      []
+    }
+  } #h(1fr) #[#data.invoice-city, #data.date]
 ]
 
 #heading[
   Invoice \##data.invoice-nr
 ]
 
-#let items = data.items.enumerate().map(
-    ((id, item)) => (
-      [#item.date],
-      [#item.description],
-      [],
-      [#format_currency(item.price)]
-    )
-  ).flatten()
+#let items = data.items.map(item => {
+  if item.at("rate") != none and item.at("unit") != none {
+    item.description = [#item.description (#item.unit $times$ #format_currency(item.rate))]
+  }
+  ([#item.date], [#item.description], [], [#format_currency(item.price)])
+}).flatten()
 
-#let total = data.items.map((item) => item.at("price")).sum()
+#let total = data.items.map(item => item.at("price")).sum()
 
 #[
   #set text(number-type: "lining")
   #gridx(
     columns: (auto, 1fr, auto, auto),
-    align: ((column, row) => if column >= 3 { right } else { left} ),
+    align: (
+      (column, row) => if column >= 3 {
+        right
+      } else {
+        left
+      }
+    ),
     hlinex(stroke: (thickness: 0.5pt)),
-    [*Date*], [*Description*], [], [*Cost*],
+    [*Date*],
+    [*Description*],
+    [],
+    [*Cost*],
     hlinex(),
     ..items,
     hlinex(),
-    [], [], [ Total:], [#format_currency(total)],
+    [],
+    [],
+    [ Total:],
+    [#format_currency(total)],
     hlinex(start: 2),
   )
 ]
@@ -127,10 +147,14 @@
       set text(number-type: "lining")
       gridx(
         columns: 2,
-        [Account holder name],[: #data.bank_account.name],
-        [Bank name],[: #data.bank_account.bank],
-        [Bank code],[: #data.bank_account.bank_code],
-        [Account number],[: #data.bank_account.number],
+        [Account holder name],
+        [: #data.bank_account.name],
+        [Bank name],
+        [: #data.bank_account.bank],
+        [Bank code],
+        [: #data.bank_account.bank_code],
+        [Account number],
+        [: #data.bank_account.number],
       )
     }
   }
