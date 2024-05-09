@@ -47,7 +47,7 @@
 
 #let items = data.items.map(item => {
   if item.at("rate", default: none) != none and item.at("unit", default: none) != none {
-    item.description = [#item.description (#item.unit $times$ #format_currency(item.rate))]
+    item.description = [#item.description (#item.unit $times$ #format-currency(item.rate))]
   }
   ([#item.date], [#item.description], [], [#format-currency(item.price)])
 }).flatten()
