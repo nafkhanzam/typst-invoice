@@ -1,4 +1,3 @@
-#import "@preview/tablex:0.0.8": gridx, hlinex
 #import "@nafkhanzam/common:0.0.1": *
 
 #let data = toml("data.toml")
@@ -45,18 +44,24 @@
   Invoice \##data.invoice-nr
 ]
 
-#let items = data.items.map(item => {
-  if item.at("rate", default: none) != none and item.at("unit", default: none) != none {
-    item.description = [#item.description (#item.unit $times$ #format-currency(item.rate))]
-  }
-  ([#item.date], [#item.description], [], [#format-currency(item.price)])
-}).flatten()
+#let items = (
+  data
+    .items
+    .map(item => {
+      if item.at("rate", default: none) != none and item.at("unit", default: none) != none {
+        item.description = [#item.description (#item.unit $times$ #format-currency(item.rate))]
+      }
+      ([#item.date], [#item.description], [], [#format-currency(item.price)])
+    })
+    .flatten()
+)
 
 #let total = data.items.map(item => item.at("price")).sum()
 
 #[
   #set text(number-type: "lining")
-  #gridx(
+  #table(
+    stroke: none,
     columns: (auto, 1fr, auto, auto),
     align: (
       (column, row) => if column >= 3 {
@@ -65,19 +70,19 @@
         left
       }
     ),
-    hlinex(stroke: (thickness: 0.5pt)),
+    table.hline(stroke: (thickness: 0.5pt)),
     [*Date*],
     [*Description*],
     [],
     [*Cost*],
-    hlinex(),
+    table.hline(),
     ..items,
-    hlinex(),
+    table.hline(),
     [],
     [],
     [ Total:],
     [#format-currency(total)],
-    hlinex(start: 2),
+    table.hline(start: 2),
   )
 ]
 
@@ -100,16 +105,13 @@
     {
       set par(leading: 0.40em)
       set text(number-type: "lining")
-      gridx(
+      grid(
         columns: 2,
-        [Account holder name],
-        [: #data.bank_account.name],
-        [Bank name],
-        [: #data.bank_account.bank],
-        [Bank code],
-        [: #data.bank_account.bank_code],
-        [Account number],
-        [: #data.bank_account.number],
+        gutter: 1em,
+        [Account holder name], [: #data.bank_account.name],
+        [Bank name], [: #data.bank_account.bank],
+        [Bank code], [: #data.bank_account.bank_code],
+        [Account number], [: #data.bank_account.number],
       )
     }
   }
@@ -121,6 +123,6 @@ Thank you.
 
 Best regards,
 
-#image("res/sign.png", width: 10em)
+#image("res/signature.png", width: 10em)
 
 #data.author.name
